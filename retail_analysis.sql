@@ -27,13 +27,88 @@ CREATE TABLE retail_sales(
 );
 
 
--- 3. DATA PREVIEW
-
--- Preview first 10 rows
-SELECT *
-FROM retail_sales
-LIMIT 10;
-
+-- 3. DATA PREVIEW AND EXPLORATION QUERIES 
 
 -- Count total records in dataset
 SELECT COUNT(*) FROM retail_sales;
+
+-- Total number of sales
+SELECT COUNT(*) AS total_sales
+FROM retail_sales;
+
+-- Total number of customers
+SELECT COUNT(DISTINCT customer_id) AS total_customers
+FROM retail_sales;
+
+-- Number of product categories
+SELECT DISTINCT category
+FROM retail_sales;
+
+-- Date range of dataset
+SELECT 
+    MIN(sale_date) AS start_date,
+    MAX(sale_date) AS end_date
+FROM retail_sales;
+
+
+-- 4. DATA CLEANING
+
+-- Check for NULL values
+SELECT *
+FROM retail_sales
+WHERE
+    transactions_id IS NULL
+    OR sale_date IS NULL
+    OR sale_time IS NULL
+    OR gender IS NULL
+    OR category IS NULL
+    OR quantity IS NULL
+	OR price_per_unit IS NULL
+    OR cogs IS NULL
+    OR total_sale IS NULL;
+
+
+
+-- Count rows with NULL values
+SELECT COUNT(*) AS null_count
+FROM retail_sales
+WHERE
+    transactions_id IS NULL
+    OR sale_date IS NULL
+    OR sale_time IS NULL
+    OR gender IS NULL
+    OR category IS NULL
+    OR quantity IS NULL
+	OR price_per_unit IS NULL
+    OR cogs IS NULL
+    OR total_sale IS NULL;
+
+ -- Delete NULL records
+DELETE FROM retail_sales
+WHERE 
+    transactions_id IS NULL
+    OR sale_date IS NULL
+    OR sale_time IS NULL
+    OR gender IS NULL
+    OR category IS NULL
+    OR quantity IS NULL
+	OR price_per_unit IS NULL
+    OR cogs IS NULL
+    OR total_sale IS NULL;
+
+
+
+-- Check duplicate transactions
+SELECT transactions_id, COUNT(*)
+FROM retail_sales
+GROUP BY transactions_id
+HAVING COUNT(*) > 1;
+
+
+
+
+
+
+
+
+	
