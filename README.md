@@ -32,7 +32,7 @@ The dataset contains retail transaction records including customer details, prod
 
 ## Project Structure
 
-
+```
 SQL-Retail-Sales-Project
 │
 ├── screenshots
@@ -44,7 +44,7 @@ SQL-Retail-Sales-Project
 ├── retail_analysis.sql
 ├── retail_sales_dataset.csv
 └── README.md
-
+```
 
 ---
 
