@@ -206,3 +206,121 @@ HAVING SUM(total_sale) >
 ORDER BY customer_id;
 
 
+-- Customer Behavior Analysi
+-- 15. Find customers who made multiple transactions on the same day.
+SELECT a.customer_id, a.sale_date, COUNT(*) AS transactions
+FROM retail_sales a
+GROUP BY a.customer_id, a.sale_date
+HAVING COUNT(*) > 1
+ORDER BY transactions DESC;
+
+-- 16. Which gender spends more on average? 
+SELECT gender,
+       ROUND(AVG(total_sale),2) AS avg_spending
+FROM retail_sales
+GROUP BY gender
+ORDER BY avg_spending DESC;
+
+
+-- 17. Identify the top 5 highest spending customers. 
+SELECT customer_id,
+       SUM(total_sale) AS total_spent
+FROM retail_sales
+GROUP BY customer_id
+ORDER BY total_spent DESC
+LIMIT 5;
+
+
+-- 18. Find the top 10 highest value transactions.
+SELECT *
+FROM retail_sales
+ORDER BY total_sale DESC
+LIMIT 10;
+
+
+-- 19. Which age group contributes the most revenue? 
+SELECT 
+    CASE
+        WHEN age BETWEEN 18 AND 25 THEN '18-25'
+        WHEN age BETWEEN 26 AND 35 THEN '26-35'
+        WHEN age BETWEEN 36 AND 45 THEN '36-45'
+        WHEN age BETWEEN 46 AND 60 THEN '46-60'
+        ELSE '60+'
+    END AS age_group,
+    SUM(total_sale) AS total_revenue
+FROM retail_sales
+GROUP BY age_group
+ORDER BY total_revenue DESC;
+
+
+-- Advanced SQL Analysis
+-- 20. Find the Top 3 Transactions in Each Category
+SELECT *
+FROM (
+    SELECT 
+        transactions_id,
+        category,
+        total_sale,
+        RANK() OVER (PARTITION BY category ORDER BY total_sale DESC) AS rank
+    FROM retail_sales
+) t
+WHERE rank <= 3;
+
+
+-- 21. Find Customers Who Spend More Than Their Category Average
+SELECT r.customer_id,
+       r.category,
+       r.total_sale
+FROM retail_sales r
+JOIN (
+    SELECT category,
+           AVG(total_sale) AS avg_category_sale
+    FROM retail_sales
+    GROUP BY category
+) c
+ON r.category = c.category
+WHERE r.total_sale > c.avg_category_sale
+ORDER BY category;
+
+
+-- Q.22 Find customers who purchased in more than one category
+SELECT 
+    customer_id,
+    COUNT(DISTINCT category) AS categories_purchased
+FROM retail_sales
+GROUP BY customer_id
+HAVING COUNT(DISTINCT category) > 1
+ORDER BY categories_purchased DESC;
+
+
+-- Q.23 Find the busiest sales hour
+SELECT 
+    EXTRACT(HOUR FROM sale_time) AS hour,
+    COUNT(*) AS total_transactions
+FROM retail_sales
+GROUP BY hour
+ORDER BY total_transactions DESC
+LIMIT 1;
+
+-- Q.24 What are the total sales by weekday?
+SELECT 
+    TO_CHAR(sale_date,'Day') AS weekday,
+    SUM(total_sale) AS total_sales
+FROM retail_sales
+GROUP BY weekday
+ORDER BY total_sales DESC;
+
+
+-- Q.25 Which category sells the most per customer on average?
+SELECT 
+    category,
+    ROUND(SUM(total_sale) / COUNT(DISTINCT customer_id),2) AS avg_sales_per_customer
+FROM retail_sales
+GROUP BY category
+ORDER BY avg_sales_per_customer DESC;
+
+
+
+
+
+
